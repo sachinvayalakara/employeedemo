@@ -1,0 +1,724 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+     <script src="//cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+
+</head>
+<style>
+
+.row{
+    margin-top:40px;
+    padding: 0 10px;
+}
+
+.clickable{
+    cursor: pointer;   
+}
+
+.panel-heading span {
+	margin-top: -20px;
+	font-size: 15px;
+}
+
+
+mark {
+  background: orange;
+  color: black;
+}
+
+
+.border {
+    background: #e8e8e8 ;
+    height: 1px;
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 45px;
+    float:left;
+}
+
+/* Feature-CSS */
+
+.icon {
+    color : #fff;
+    padding:15px;
+    background:#323232 ;
+    font-size:50px;
+    border-radius:90px;
+    border:10px solid #323232 ;
+
+}
+.feature-box {
+    text-align: center;
+    padding: 20px;
+    transition: .5s;
+    margin-bottom: 30px;
+    border: 1px solid #e8e8e8;
+    background-color: white;
+}
+
+.y{
+    height: 812px;
+}
+.feature-box:hover {
+
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.feature-box h4 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 25px 0 15px;
+}
+.tt {
+
+    margin-right: 70px;
+}
+
+
+#mesBox {
+    display:none;
+    background-color: red;
+    border: 1px solid #abc;
+    color: white;
+    position: fixed;
+    padding: 20px;
+    top:0;
+    left: 50%;
+    height: 50px;
+}
+#mz {
+    display:none;
+    background-color: red;
+    border: 1px solid #abc;
+    color: white;
+    text-align: center;
+    height: 30px;
+    width: 300px;
+    top:0;
+    left: 50%;
+
+}
+
+#mB {
+    display:none;
+    background-color: red;
+    border: 1px solid #abc;
+    color: white;
+    text-align: center;
+    height: 30px;
+    width: 300px;
+    top:0;
+    left: 50%;
+
+}
+ .padi{
+        padding: 10px;
+    }
+ .select2{
+        width: 180px;
+    }
+  .trunback:hover
+{
+  background-color: #009aff !important;
+}
+         .jsdragtable-contents {
+    background: rgb(218, 209, 209);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    box-shadow: 2px 2px 5px #aaa;
+    padding: 0;
+}
+
+.jsdragtable-contents table {
+    margin-bottom: 0;
+}
+
+.p-0 {
+
+  margin-top: 30px !important; }
+
+  .settings-menu .head img{
+        max-width: 65px;
+  }
+   .settings-menu .head h4{
+        font-size: 18px;
+  }
+  .settings-menu .database-setting{
+      background:#fff;
+  }
+  .settings-menu .user-setting{
+       background:#fff;
+  }
+    .settings-menu .manage-user{
+       background:#fff;
+  }
+  .menu-content .menu-list{
+      list-style-type:none;
+  }
+    .menu-content .menu-list .menu-item img{
+    max-width: 20px;
+  }
+  .menu-content .menu-list .menu-item{
+      margin-bottom: 10px;
+  }
+    .menu-content .menu-list .menu-item a{
+     padding-left: 5px;
+    font-size: 19px;
+    color: #333;
+    text-decoration: none;
+  }
+
+  .bg-white{
+      background:#fff;
+      padding-top:40px;
+  }
+
+
+
+     </style>
+<body>
+    <div class="content-area">
+        <aside class="side-menu" style="overflow: scroll;">
+            <div class="side-user-details">
+                <div class="pro-pic">
+                    <img src="" class="img-fluid">
+                </div>
+            </div>
+            <ul class="side-navbar">
+                <li class="menu-head">
+                    <a class="title-menu-left">
+                        <span class="widget-menu">MAIN MENU</span>
+                        <i class="fa fa-cog" onclick="openNav()" aria-hidden="true"></i>
+
+                    </a>
+                </li>
+
+                <li class="side-navbar-list ">
+                    <a class="nav-item active" href="#">
+                        <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                        <p>Create Employee</p>
+                    </a>
+                </li>
+                <li class="side-navbar-list ">
+                    <a class="nav-item active" href="/Models">
+                        <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                        <p>View Employee</p>
+                    </a>
+                </li>
+                <li class="side-navbar-list ">
+                    <a href="#yourbusiness" class="nav-item collapsed" data-toggle="collapse" aria-expanded="false">
+                        <i class="fa fa-file" aria-hidden="true"></i>
+                        <p>Models</p>
+                        <h4>
+                            <img src="/static/img/plus.png">
+                        </h4>
+                    </a>
+                   
+                </li>
+
+                 
+                <!--<li class="side-navbar-list ">-->
+                <!--    <a class="nav-item "> <i class="material-icons">dashboard</i>-->
+                <!--        <p>Elements</p>-->
+                <!--    </a>-->
+                <!--</li>-->
+                <!--<li class="side-navbar-list ">-->
+                <!--    <a class="nav-item "> <i class="material-icons">dashboard</i>-->
+                <!--        <p>Charts</p>-->
+                <!--    </a>-->
+                <!--</li>-->
+            </ul>
+
+            <ul class="side-navbar">
+                <li class="menu-head">
+                    <a class="title-menu-left">
+                        <span class="widget-menu">WIDGET MENU</span>
+                        <i class="fa fa-cog" aria-hidden="true"></i>
+
+                    </a>
+                </li>
+                <li class="side-navbar-list ">
+                    <a class="nav-item active"  href="/loaddashboard">
+                        <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+               
+            </ul>
+
+        </aside>
+        <div class="wrapper">
+            <div class="header  header-fixed ">
+                <div class="container-fluid">
+                    <div class="main-header-left ">
+                        <div class="app-sidebar__toggle" data-toggle="sidebar">
+                            <a class="open-toggle" id="toggle-btn"><i class="material-icons">menu</i></a>
+                        </div>
+                        <div class="header-top-menu-left">
+                            <ul class="navbar-nav">
+                                <li>
+                                    <a>
+                                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="header-top-menu-center time-section">
+                            <div class="date-container">
+                                <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                                <span id="date"></span>
+                            </div>
+                            <div class="time-container">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                <div id="clock">
+                                    <p class="unit" id="hours"></p>
+                                    <p class="unit" id="minutes"></p>
+                                    <p class="unit" id="seconds"></p>
+                                    <p class="unit" id="ampm"></p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="main-header-right ">
+                        <div class="nav nav-item  navbar-nav-right ml-auto">
+                            <div class="dropdown main-profile-menu nav nav-item nav-link">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item dropdown">
+                                        <a class="profile-user d-flex nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                           
+                                            Hi, {{user.name}}
+                                            <b class="caret"></b>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right animate slideIn p-0" aria-labelledby="navbarDropdown">
+                                            <div class="main-header-profile bg-primary p-3">
+                                                <div class="d-flex">
+                                                    
+                                                    <div class="ml-3">
+                                                        <h6>{{user.name}}</h6><span>{{user.company_name}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           <a class="dropdown-item" href="/userprofile"><i class="fa fa-user" style="color: gainsboro;" aria-hidden="true"></i>Profile</a>
+
+
+                                           <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out" style="color: gainsboro;" aria-hidden="true"></i>Logout</a>
+                                           </div>
+                                    </li>
+                                        <li class="nav-item dropdown">
+                                            <a class="profile-user d-flex nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                 <i class="fa fa-bell" aria-hidden="true"></i>
+                                                <div class="noft-red notification_count">{{nti_count}}</div>
+                                            </a>
+
+                                            <div class="dropdown-menu dropdown-menu-right animate slideIn p-0 dropmenu-items" aria-labelledby="navbarDropdown">
+                                               
+                                            </div>
+
+                                        </li>
+                                        <li class="nav-item dropdown">
+                                            <a onclick=""><i class="fa fa-cog" aria-hidden="true"></i>Settings</a>
+
+                                        </li>
+
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-wrapper">
+                <div class="container-fluid p-0">
+                     <!-- breadcrumb Start -->
+            <div class="breadcrumb-header">
+                <div class="project-dashboard-content">
+                    <div class="board-header-main">
+                        <div class="header-top">
+                            <div class="p-head-left">
+                                <div class="board-name">
+                                    <h4 contenteditable="true">
+                                      Company ABC
+                                    </h4>
+                                    <h4 contenteditable="true">
+                                       
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="p-head-right">
+                                <div class="board-actions">
+                                    <div class="subscribers">
+                                        <div class="subscriber-list-overlay">
+                                            <div class="subscriber-name">
+                                                <a>A</a>
+                                            </div>
+                                            <div class="more-subscriber" >
+                                                <i class="fa fa-folder-o" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header-bottom">
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- breadcrumb End -->
+    
+            <div class="row row-sm">
+                <div class="board-content-wrapper">
+                    <div class="board-filter">
+                        <div class="board-control-component">
+                            <div class="control-component-btn">
+                                
+                            </div>
+                        </div>
+                        <div class="board-new-item-component">
+                            <div class="new-item-btn">
+                                <div class="btn-group">
+                                    <button class="btn btn-primary btn-new-item newrow_add"  id="{{id}}" >New Employee</button>
+                                    <button data-toggle="dropdown" class="btn btn-default btn-arrow-dropdown" type="button"><i class="fa fa-angle-down"></i></button>
+                                    {% if pr_check  == t %}
+                                        <ul class="dropdown-menu">
+                                            <li id="btn_new_row"><a id="more-subs" > <i class="fa fa-clone" aria-hidden="true"></i> New Employee</a></li>
+                                           
+                                        </ul>
+                                    {% else %}
+                                       
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="board-filters-component">
+                            <!--<div class="search-filter">-->
+                            <!--    <div class="form-group m-0">-->
+                            <!--        <input type="text" placeholder="Search / Filter Board" class="form-control">-->
+                            <!--    </div>-->
+                            <!--</div>-->
+                            <div class="profile-filter">
+                                <a data-toggle="dropdown" class="menu-icon">
+                                    <span data-tooltip="tooltip" title="List of Users" data-placement="top" >
+                                    <i class="fa fa-user-circle " aria-hidden="true"></i></span></a>
+                               
+                            </div>
+                            <div class="profile-filter hidden-columns">
+                                <a class="menu-icon " data-toggle="dropdown">
+                                    <span data-tooltip="tooltip" title="Hide/Show" data-placement="top">
+                                    <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                                     </span>
+    
+                                </a>
+                       
+                            </div>
+                            <div class="profile-filter filter-column">
+                                <a class="menu-icon" data-toggle="dropdown"><span data-tooltip="tooltip" title="Filter" data-placement="top">
+                                    <i class="fa fa-filter" aria-hidden="true" ></i></span></a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="board-content-area">
+    
+                {% if messages %}
+                  <!-- {% for message in messages %} -->
+                  <div class="alert {{ message.tags }} alert-dismissible" style="background: #17a2b8" role="alert">
+                  <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"> -->
+                  <!-- <span aria-hidden="true" >&times;</span>
+                   </button> -->
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    {{ message }}
+                   </div>
+                  <!-- {% endfor %} -->
+                {% endif %}
+    
+                        <div class="project-table-container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="customers"  class="dataTables_wrapper reference_table_container table-responsive" >
+                                        <!-- <table class="table  resizable " id="demo">
+                                            <thead >
+                                                <th>
+                                                    ID
+                                                </th>
+                                                
+                                                <th>
+                                                    Email
+                                                </th>
+                                                <th>
+                                                    Phone
+                                                </th>
+                                                <th>
+                                                    Image
+                                                </th>
+                                                
+                                                <th>
+                                                    View
+                                                </th>
+
+                                            </thead>
+                                            <tbody  class="table_body">
+                                                {% for obj in emp_obj %}
+                                                <tr >
+                                                    
+                                                            <td  class="" >
+                                                                
+                                                                
+                                                                    {{obj.id}}
+                                                                
+                                                            
+                                                            </td>
+
+                                                            <td  class="" style="font-size: smaller;" >
+                                                               
+                                                                
+                                                                    {{obj.email}}
+                                                                
+                                                            
+                                                            </td>
+
+                                                            <td  class="" >
+                                                                {{obj.phone}}
+                                                            </td>
+
+                                                            <td  class="" >
+                                                                <img src="{{obj.user_image}}"  class="avatar img-circle img-thumbnail" >
+                                                            </td>
+                                                            <td  class="" >
+                                                                <input type="button" value="View">
+                                                            </td>
+                                                           
+                                                            </tr>
+                                                            {% endfor %}
+                                                            
+                                            </tbody>
+                                        </table> -->
+
+                                        <div class="container">
+                                          
+                                            <div class="row">
+                                                {% for obj in emp_obj %}
+                                                <div class="col-md-6">
+                                                    <div class="panel panel-primary" style="background-color: gray; height: 400px;">
+                                                        <div class="panel-heading">
+                                                            <h3 class="panel-title"></h3>
+                                                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <img src="{{obj.user_image.url}}" style="width: 80px; height: 80px;" class="avatar img-circle img-thumbnail" >
+<br>
+<h6>Employee Name</h6>
+{{obj.emp_name}}
+<br>
+<hr>
+<h6>Employee email</h6>
+{{obj.email}}
+<br>
+<hr>
+<h6>Employee phone</h6>
+{{obj.phone}}
+<br>
+<hr>
+<h6>Employee address</h6>
+{{obj.address}}
+  <hr>                                      
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                                
+                                            </div>
+                                           
+                                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="sidebar sidebar-right">
+                <a class="sidebar-close"><img src="/static/img/close.svg"></a>
+                <div class="content-sidebar">
+                    <div class="card-header tab-card-header bg-transparent">
+                        <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="One" aria-selected="true">Activity</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="Two" aria-selected="false">Information</a>
+                            </li>
+    
+    
+                        </ul>
+                    </div>
+    
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active p-4" id="one" role="tabpanel" aria-labelledby="one-tab">
+                            
+                                <div class="row form-group">
+                                    <div id="mesBox">Exceeds the Size limit</div>
+                                    <form method="POST" action="/employeedetails" enctype="multipart/form-data" id="inputfile">
+                                        {% csrf_token %}
+                                    <div class="col-md-6">
+                                        <label class="col-form-label">Employee Name</label>
+                                      
+                                        
+                                        
+                                       
+                                      
+                                    </div>
+                                    <div class="col-sm-6 ffield">
+                                       
+                                            <input type="text" class="form-control" name="empname">
+                                           
+                                            
+                                            
+                                            
+    
+                                    </div>
+
+
+
+                                    <div class="col-md-6">
+                                        
+                                        <label class="col-form-label">Image</label>
+                                       
+                                    </div>
+                                    <div class="col-sm-6 ffield">
+                                        <input type="file" name="propic" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        
+                                        <label class="col-form-label"> Email</label>
+                                       
+                                    </div>
+                                    <div class="col-sm-6 ffield">
+                                        <input type="email" name="email" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        
+                                        <label class="col-form-label"> Phone</label>
+                                       
+                                    </div>
+                                    <div class="col-sm-6 ffield">
+                                         
+                                        <input type="number" name="mobile" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        
+                                        <label class="col-form-label"> Address</label>
+                                       
+                                    </div>
+                                    <div class="col-sm-6 ffield">
+                                         
+                                        <!-- <input type="text" name="address" class="form-control"> -->
+                                        <textarea name="address" id="" cols="30" rows="10">
+
+                                        </textarea>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        
+                                        <label class="col-form-label">Password</label>
+                                       
+                                    </div>
+                                    <div class="col-sm-6 ffield">
+                                         
+                                        <input type="password" name="password" class="form-control">
+                                    </div>
+
+
+
+                                </div>
+                        
+                            <div class="form-group row">
+                                <div class="col-sm-7">
+                                    <button type="submit" class="btn btn-primary adddetails" style="background: #866ec7;color: white;">Add Row</button>
+                                </div>
+                            </div>
+                        </form>
+                            <!--<button class="btn btn-danger"  id="adddetails" style="float:right">Add Row</button>-->
+                            <!-- <button class="btn btn-danger adddetails" id="{{id}}" style="float:right">Add Row</button> -->
+                        </div>
+    
+                    </div>
+                </div>
+            </div>
+           
+    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+      
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script src="{%  static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/noty.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/noty.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/themes/metroui.css">
+    <script src="{% static 'js/script.js' %}"></script>
+    
+    <script type="text/javascript" src="{% static 'bootstrap-notify-master/bootstrap-notify-master/bootstrap-notify.min.js' %}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/mark.js/7.0.0/jquery.mark.min.js"></script>
+   
+
+    
+
+    <script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+
+
+
+
+
+
+<!-- ////////////////////column drag///////////// -->
+  <script>
+   $("#demo").jsdragtable();
+</script>
+
+
+
+
+
+
+
+</body>
+
+</html>
